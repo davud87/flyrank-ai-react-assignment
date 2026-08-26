@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { TaskControls } from './components/TaskControls'
 import { TaskForm } from './components/TaskForm'
 import { TaskList } from './components/TaskList'
-import type { Priority, Task } from './types/task'
+import type { FilterStatus, Priority, Task } from './types/task'
+import { loadTasks, saveTasks } from './utils/taskStorage'
 
 type TaskFormData = {
   title: string
@@ -20,11 +21,38 @@ const createTaskId = () => {
 }
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<Task[]>(loadTasks)
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeFilter, setActiveFilter] = useState<FilterStatus>('all')
 
   const editingTask =
     tasks.find((task) => task.id === editingTaskId) ?? null
+
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase()
+  const visibleTasks = tasks.filter((task) => {
+    const matchesFilter =
+      activeFilter === 'all' ||
+      (activeFilter === 'active' && !task.completed) ||
+      (activeFilter === 'completed' && task.completed)
+
+    if (!matchesFilter) {
+      return false
+    }
+
+    if (!normalizedSearchQuery) {
+      return true
+    }
+
+    return (
+      task.title.toLowerCase().includes(normalizedSearchQuery) ||
+      (task.description?.toLowerCase().includes(normalizedSearchQuery) ?? false)
+    )
+  })
+
+  useEffect(() => {
+    saveTasks(tasks)
+  }, [tasks])
 
   const handleSaveTask = (taskData: TaskFormData) => {
     if (editingTask) {
@@ -114,9 +142,15 @@ function App() {
         />
 
         <div className="task-board">
-          <TaskControls />
+          <TaskControls
+            activeFilter={activeFilter}
+            searchQuery={searchQuery}
+            onFilterChange={setActiveFilter}
+            onSearchChange={setSearchQuery}
+          />
           <TaskList
-            tasks={tasks}
+            tasks={visibleTasks}
+            totalTaskCount={tasks.length}
             editingTaskId={editingTaskId}
             onDeleteTask={handleDeleteTask}
             onEditTask={handleStartEditing}

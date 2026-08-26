@@ -6,7 +6,19 @@ const filters: Array<{ label: string; value: FilterStatus }> = [
   { label: 'Completed', value: 'completed' },
 ]
 
-export function TaskControls() {
+type TaskControlsProps = {
+  activeFilter: FilterStatus
+  searchQuery: string
+  onFilterChange: (filter: FilterStatus) => void
+  onSearchChange: (query: string) => void
+}
+
+export function TaskControls({
+  activeFilter,
+  searchQuery,
+  onFilterChange,
+  onSearchChange,
+}: TaskControlsProps) {
   return (
     <section className="task-controls" aria-labelledby="tasks-title">
       <div className="section-heading">
@@ -20,8 +32,9 @@ export function TaskControls() {
           id="task-search"
           name="task-search"
           type="search"
+          value={searchQuery}
           placeholder="Search by title or description"
-          disabled
+          onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
 
@@ -31,10 +44,12 @@ export function TaskControls() {
             key={filter.value}
             type="button"
             className={
-              filter.value === 'all' ? 'filter-button active' : 'filter-button'
+              filter.value === activeFilter
+                ? 'filter-button active'
+                : 'filter-button'
             }
-            aria-pressed={filter.value === 'all'}
-            disabled
+            aria-pressed={filter.value === activeFilter}
+            onClick={() => onFilterChange(filter.value)}
           >
             {filter.label}
           </button>

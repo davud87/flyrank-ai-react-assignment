@@ -8,6 +8,7 @@ const priorityLabels: Record<Priority, string> = {
 
 type TaskListProps = {
   tasks: Task[]
+  totalTaskCount: number
   editingTaskId: string | null
   onDeleteTask: (taskId: string) => void
   onEditTask: (taskId: string) => void
@@ -16,6 +17,7 @@ type TaskListProps = {
 
 export function TaskList({
   tasks,
+  totalTaskCount,
   editingTaskId,
   onDeleteTask,
   onEditTask,
@@ -25,8 +27,14 @@ export function TaskList({
     return (
       <section className="task-list" aria-label="Task list">
         <article className="empty-state">
-          <p className="empty-title">No tasks yet</p>
-          <p>Add your first task to start organizing your day.</p>
+          <p className="empty-title">
+            {totalTaskCount === 0 ? 'No tasks yet' : 'No matching tasks'}
+          </p>
+          <p>
+            {totalTaskCount === 0
+              ? 'Add your first task to start organizing your day.'
+              : 'Try adjusting your search or switching to another status filter.'}
+          </p>
         </article>
       </section>
     )
