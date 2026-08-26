@@ -21,6 +21,7 @@ export function TaskControls() {
           name="task-search"
           type="search"
           placeholder="Search by title or description"
+          disabled
         />
       </div>
 
@@ -33,6 +34,7 @@ export function TaskControls() {
               filter.value === 'all' ? 'filter-button active' : 'filter-button'
             }
             aria-pressed={filter.value === 'all'}
+            disabled
           >
             {filter.label}
           </button>
