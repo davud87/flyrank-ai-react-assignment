@@ -118,4 +118,4 @@ No automated tests are included in this project.
 ## Repository / Live Demo
 
 - Repository: https://github.com/davud87/flyrank-ai-react-assignment
-- Live demo: deployment URL not added yet
+- Live demo: https://flyrank-ai-react-assignment.vercel.app
