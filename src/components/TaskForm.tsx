@@ -1,21 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import type { Priority } from '../types/task'
-import type { Task } from '../types/task'
-
-const priorities: Priority[] = ['low', 'medium', 'high']
-
-const priorityLabels: Record<Priority, string> = {
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-}
-
-type TaskFormData = {
-  title: string
-  description: string
-  priority: Priority
-}
+import { isPriority, priorities, priorityLabels } from '../types/task'
+import type { Priority, Task, TaskFormData } from '../types/task'
 
 type TaskFormProps = {
   editingTask: Task | null
@@ -125,7 +111,11 @@ export function TaskForm({
           id="task-priority"
           name="task-priority"
           value={priority}
-          onChange={(event) => setPriority(event.target.value as Priority)}
+          onChange={(event) => {
+            if (isPriority(event.target.value)) {
+              setPriority(event.target.value)
+            }
+          }}
         >
           {priorities.map((priority) => (
             <option key={priority} value={priority}>

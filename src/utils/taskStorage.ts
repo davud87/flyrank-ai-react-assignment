@@ -1,14 +1,10 @@
-import type { Priority, Task } from '../types/task'
+import { isPriority } from '../types/task'
+import type { Task } from '../types/task'
 
 const TASK_STORAGE_KEY = 'taskflow.tasks'
-const priorities: Priority[] = ['low', 'medium', 'high']
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null
-}
-
-const isPriority = (value: unknown): value is Priority => {
-  return typeof value === 'string' && priorities.includes(value as Priority)
 }
 
 const isTask = (value: unknown): value is Task => {

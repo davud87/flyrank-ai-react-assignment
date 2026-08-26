@@ -1,10 +1,5 @@
-import type { Priority, Task } from '../types/task'
-
-const priorityLabels: Record<Priority, string> = {
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-}
+import { priorityLabels } from '../types/task'
+import type { Task } from '../types/task'
 
 type TaskListProps = {
   tasks: Task[]

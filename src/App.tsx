@@ -3,14 +3,8 @@ import './App.css'
 import { TaskControls } from './components/TaskControls'
 import { TaskForm } from './components/TaskForm'
 import { TaskList } from './components/TaskList'
-import type { FilterStatus, Priority, Task } from './types/task'
+import type { FilterStatus, Task, TaskFormData } from './types/task'
 import { loadTasks, saveTasks } from './utils/taskStorage'
-
-type TaskFormData = {
-  title: string
-  description: string
-  priority: Priority
-}
 
 const createTaskId = () => {
   if ('randomUUID' in crypto) {
@@ -100,6 +94,14 @@ function App() {
   }
 
   const handleDeleteTask = (taskId: string) => {
+    const confirmedDelete = window.confirm(
+      'Are you sure you want to delete this task?',
+    )
+
+    if (!confirmedDelete) {
+      return
+    }
+
     setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId))
 
     if (editingTaskId === taskId) {
