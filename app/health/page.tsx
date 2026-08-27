@@ -1,29 +1,9 @@
-import { headers } from 'next/headers'
-import type { HealthStatus } from '../api/health/route'
+import { getHealthStatus } from '../../src/utils/health'
 
 export const dynamic = 'force-dynamic'
 
-async function getHealthStatus(): Promise<HealthStatus> {
-  const requestHeaders = await headers()
-  const host = requestHeaders.get('host') ?? 'localhost:3000'
-  const protocol =
-    requestHeaders.get('x-forwarded-proto') ??
-    (host.startsWith('localhost') ? 'http' : 'https')
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? `${protocol}://${host}`
-
-  const response = await fetch(`${baseUrl}/api/health`, {
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Unable to fetch health status')
-  }
-
-  return response.json()
-}
-
-export default async function HealthPage() {
-  const health = await getHealthStatus()
+export default function HealthPage() {
+  const health = getHealthStatus()
 
   return (
     <main className="mx-auto grid min-h-[calc(100svh-80px)] w-[min(100%_-_2rem,720px)] place-items-center py-10">
