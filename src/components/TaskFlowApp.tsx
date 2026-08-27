@@ -1,10 +1,12 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import './App.css'
-import { TaskControls } from './components/TaskControls'
-import { TaskForm } from './components/TaskForm'
-import { TaskList } from './components/TaskList'
-import type { FilterStatus, Task, TaskFormData } from './types/task'
-import { loadTasks, saveTasks } from './utils/taskStorage'
+import './TaskFlowApp.css'
+import { TaskControls } from './TaskControls'
+import { TaskForm } from './TaskForm'
+import { TaskList } from './TaskList'
+import type { FilterStatus, Task, TaskFormData } from '../types/task'
+import { loadTasks, saveTasks } from '../utils/taskStorage'
 
 const createTaskId = () => {
   if ('randomUUID' in crypto) {
@@ -14,7 +16,7 @@ const createTaskId = () => {
   return Date.now().toString()
 }
 
-function App() {
+export function TaskFlowApp() {
   const [tasks, setTasks] = useState<Task[]>(loadTasks)
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -163,5 +165,3 @@ function App() {
     </main>
   )
 }
-
-export default App
