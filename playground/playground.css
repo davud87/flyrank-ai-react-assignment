@@ -1,0 +1,252 @@
+.playground-shell {
+  width: min(1040px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
+}
+
+.playground-header,
+.playground-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.playground-header {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 28px;
+}
+
+.playground-header h1,
+.playground-section h2 {
+  margin: 0;
+  color: var(--text-strong);
+  line-height: 1.1;
+}
+
+.playground-header h1 {
+  max-width: 720px;
+  font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.playground-header p,
+.playground-section p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.playground-kicker {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.playground-section {
+  display: grid;
+  gap: 22px;
+  margin-top: 20px;
+  padding: 24px;
+}
+
+.section-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.primary-demo-action,
+.secondary-demo-action,
+.text-link,
+.tab-button,
+.disclosure-trigger,
+.icon-button {
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.primary-demo-action,
+.secondary-demo-action,
+.text-link {
+  width: fit-content;
+  min-height: 44px;
+  padding: 0 16px;
+}
+
+.primary-demo-action {
+  border: 0;
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.secondary-demo-action {
+  border: 1px solid var(--border);
+  background: var(--field-bg);
+  color: var(--text-strong);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.primary-demo-action:focus-visible,
+.secondary-demo-action:focus-visible,
+.text-link:focus-visible,
+.tab-button:focus-visible,
+.disclosure-trigger:focus-visible,
+.icon-button:focus-visible,
+.modal-focus-fallback:focus-visible,
+.tab-panel:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.58);
+}
+
+.modal-dialog {
+  width: min(100%, 520px);
+  max-height: min(680px, calc(100svh - 40px));
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.26);
+}
+
+.modal-focus-fallback {
+  padding: 24px;
+}
+
+.modal-heading-row {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.modal-heading-row h2 {
+  margin: 0;
+  color: var(--text-strong);
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: var(--field-bg);
+  color: var(--text-strong);
+}
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.tabs-widget {
+  display: grid;
+  gap: 0;
+}
+
+.tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 0 16px;
+}
+
+.tab-button[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tab-panel {
+  border: 1px solid var(--border);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  padding: 18px;
+}
+
+.tab-panel ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-muted);
+}
+
+.disclosure {
+  display: grid;
+  gap: 12px;
+}
+
+.disclosure-trigger {
+  width: fit-content;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  background: var(--field-bg);
+  color: var(--text-strong);
+  padding: 0 16px;
+}
+
+.disclosure-trigger[aria-expanded='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.disclosure-panel {
+  border-left: 4px solid var(--accent);
+  padding: 2px 0 2px 16px;
+}
+
+@media (max-width: 560px) {
+  .playground-shell {
+    width: min(100% - 20px, 680px);
+    padding-top: 24px;
+  }
+
+  .playground-header,
+  .playground-section,
+  .modal-focus-fallback {
+    padding: 18px;
+  }
+
+  .dialog-actions,
+  .primary-demo-action,
+  .secondary-demo-action,
+  .text-link,
+  .disclosure-trigger {
+    width: 100%;
+  }
+}
