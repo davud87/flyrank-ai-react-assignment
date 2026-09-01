@@ -1,29 +1,41 @@
 # Evidence Folder
 
-Use this folder for real submission evidence.
+This folder contains real evidence collected for the TaskFlow AI capstone submission.
 
-## Terminal Output To Capture
+## Files
 
-Take screenshots or paste copied terminal output for:
+`ai-planner-production.png`
 
-- `npm install`
-- `npm run lint`
-- `npm test`
-- `npm run test:coverage`
-- `npm run build`
+Production AI planner generating structured task suggestions through OpenRouter.
 
-## Browser Evidence To Capture
+`axe-accessibility-evidence.png`
 
-After configuring `OPENROUTER_API_KEY` locally or in Vercel, capture:
+Final axe DevTools WCAG 2.1 AA production scan showing 0 automatic issues.
 
-- TaskFlow AI home page at desktop width
-- TaskFlow AI home page around 375px mobile width
-- Task creation dialog
-- Kanban status movement with the status select
-- AI successful suggestion state
-- AI missing-key or failure state
-- Lighthouse desktop result
-- Lighthouse mobile result
-- WAVE or axe accessibility result
+`coverage-report.png`
 
-Do not add generated coverage HTML here. The `coverage/` directory is ignored by Git and can be regenerated with `npm run test:coverage`.
+Vitest coverage report showing overall coverage and component line coverage above the 50% capstone requirement.
+
+`lighthouse-evidence.png`
+
+Initial production Lighthouse audit evidence showing the accessibility issue before the contrast fix.
+
+`lighthouse-final-evidence.png`
+
+Final production Lighthouse audit evidence showing 100 Performance, 100 Accessibility, 100 Best Practices, and 100 SEO.
+
+`production-app.png`
+
+Final deployed TaskFlow AI application.
+
+`tests-passing.png`
+
+Final automated test run showing 8/8 test files and 21/21 tests passing.
+
+## Notes
+
+Generated coverage HTML is intentionally not committed. The `coverage/` directory is ignored by Git and can be regenerated with:
+
+```bash
+npm run test:coverage
+```

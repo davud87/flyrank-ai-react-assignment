@@ -6,6 +6,8 @@ TaskFlow AI is an accessible work-management application for individuals and sma
 
 The app is a small Jira/Linear/Asana-inspired task workspace built with Next.js App Router, React, TypeScript, Tailwind CSS, and browser localStorage. It preserves the original TaskFlow assignment behavior while adding department spaces, Kanban workflow management, richer task details, tests, and production documentation.
 
+Production URL: https://flyrank-ai-react-assignment.vercel.app
+
 ## Problem
 
 Basic todo lists are easy to start but become hard to scan once work spans multiple teams, priorities, owners, and workflow stages. TaskFlow AI gives that work a clearer structure without trying to become a full enterprise project-management platform.
@@ -213,6 +215,31 @@ Lines: 71.86%
 Component lines: 75.17%
 ```
 
+Evidence is stored in `docs/evidence/tests-passing.png` and `docs/evidence/coverage-report.png`.
+
+## Production Audit
+
+Final Lighthouse production audit from 2026-09-01:
+
+```text
+Performance: 100
+Accessibility: 100
+Best Practices: 100
+SEO: 100
+```
+
+Final axe DevTools WCAG 2.1 AA production scan:
+
+```text
+Total automatic issues: 0
+Critical: 0
+Serious: 0
+Moderate: 0
+Minor: 0
+```
+
+The first accessibility audit found three serious contrast issues using the shared muted text color `#697386`. The shared muted tokens were updated to `#596273`, improving Lighthouse Accessibility from 96 to 100 and reducing axe DevTools issues from 3 serious issues to 0 automatic issues.
+
 ## Performance
 
 The app avoids drag-and-drop libraries, heavy animation packages, large images, and client-side API keys. The Kanban board uses native controls and local state. Generated coverage output is ignored from Git.
@@ -265,6 +292,12 @@ npm run build
 ## Deployment
 
 The repository is connected to Vercel. Configure `OPENROUTER_API_KEY` in the Vercel project environment before testing AI in production. Optionally configure `OPENROUTER_MODEL` and `NEXT_PUBLIC_APP_URL`. Keep the framework preset as Next.js and the build command as `next build`.
+
+Production deployment:
+
+```text
+https://flyrank-ai-react-assignment.vercel.app
+```
 
 ## Monitoring
 

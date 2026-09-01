@@ -1,69 +1,93 @@
 # Performance And Accessibility Audit
 
-## Lighthouse Mobile
+## Production Audit
 
-Record results after running Lighthouse in Chrome against the deployed production URL.
+Production URL: https://flyrank-ai-react-assignment.vercel.app
 
-```text
-Performance:
-Accessibility:
-Best Practices:
-SEO:
-Production URL:
-Audit date:
-```
+Audit date: 2026-09-01
 
-### What To Test
+## Lighthouse
 
-1. Test the production home page at `/`.
-2. Run one desktop Lighthouse audit.
-3. Run one mobile Lighthouse audit.
-4. Take screenshots of the Lighthouse results summary for both desktop and mobile.
-5. Save screenshots or links in `docs/evidence/` and record the numbers above.
-
-## Lighthouse Desktop
+Final production Lighthouse audit:
 
 ```text
-Performance:
-Accessibility:
-Best Practices:
-SEO:
-Production URL:
-Audit date:
+Performance: 100
+Accessibility: 100
+Best Practices: 100
+SEO: 100
 ```
+
+Evidence:
+
+- `docs/evidence/lighthouse-evidence.png`
+- `docs/evidence/lighthouse-final-evidence.png`
+
+Only one verified final production Lighthouse result is recorded here. No separate desktop/mobile score is invented beyond the evidence and verified scores supplied for this submission.
 
 ## Accessibility Audit
 
+Tool: axe DevTools
+
+WCAG standard: WCAG 2.1 AA
+
+Final production scan:
+
 ```text
-Tool:
-WCAG violations:
-Notes:
-Screenshot/evidence:
-Audit date:
+Total automatic issues: 0
+Critical: 0
+Serious: 0
+Moderate: 0
+Minor: 0
 ```
 
-### What To Check
+Evidence:
 
-1. Test `/` with WAVE or axe in Chrome.
-2. Check the task creation dialog, AI planner panel, Kanban board, status selects, and filters.
-3. Use mobile viewport around 375px wide and desktop viewport around 1280px wide.
-4. Take screenshots of the tool results and any issue details.
-5. Record violations and fixes in this document.
+- `docs/evidence/axe-accessibility-evidence.png`
 
-## Improvement Made
+## Audit-Driven Improvement
 
-During implementation, status movement was implemented with native `<select>` controls before considering drag-and-drop. This keeps the core Kanban workflow accessible to keyboard, touch, and assistive-technology users and avoids making drag gestures the only way to move work.
+The first production accessibility audit found three serious WCAG 2.1 AA color-contrast issues involving the shared muted text color:
 
-The production accessibility audit identified three serious WCAG 2.1 AA contrast issues using the shared muted text color `#697386`. The shared muted tokens were darkened to `#596273`, which calculates to 5.73:1 on `#f5f7fb` and 5.49:1 on `#eef2ff`. Rerun Lighthouse and axe/WAVE after deployment to record final audited results.
+```text
+#697386
+```
 
-## Manual Evidence Needed
+Affected areas:
 
-Add evidence after manual audit:
+- `.brand-mark`
+- `.eyebrow`
+- Workspace description text: "Organize work by department and move tasks through a focused, accessible Kanban workflow."
 
-- Lighthouse desktop screenshot
-- Lighthouse mobile screenshot
-- WAVE or axe screenshot
-- Keyboard navigation notes
-- Responsive layout screenshots
-- AI success screenshot after configuring a real `OPENROUTER_API_KEY`
-- AI missing-key/failure screenshot
+Code-level fix:
+
+```css
+--text-muted: #697386 -> #596273
+--muted-foreground: #697386 -> #596273
+```
+
+Verified contrast after the token change:
+
+```text
+#596273 on #f5f7fb = 5.73:1
+#596273 on #eef2ff = 5.49:1
+```
+
+Result after redeploy and re-audit:
+
+```text
+Lighthouse Accessibility: 96 -> 100
+axe DevTools: 3 serious issues -> 0 issues
+```
+
+This demonstrates the required audit path:
+
+```text
+audit -> issue discovered -> code improvement -> redeploy -> successful re-audit
+```
+
+## Additional Evidence
+
+- `docs/evidence/coverage-report.png` - Vitest coverage report showing component coverage above the 50% requirement.
+- `docs/evidence/tests-passing.png` - Final automated test run showing all tests passing.
+- `docs/evidence/ai-planner-production.png` - Production AI planner generating structured work through OpenRouter.
+- `docs/evidence/production-app.png` - Final deployed TaskFlow AI application.
