@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const navigationItems = [
-  { href: '/', label: 'TaskFlow' },
+  { href: '/', label: 'Workspace' },
   { href: '/health', label: 'Health' },
 ]
 
@@ -13,7 +13,7 @@ export function Navigation() {
         aria-label="Primary navigation"
       >
         <Link className="text-lg font-extrabold text-slate-950" href="/">
-          TaskFlow
+          TaskFlow AI
         </Link>
         <ul className="flex flex-wrap gap-2">
           {navigationItems.map((item) => (

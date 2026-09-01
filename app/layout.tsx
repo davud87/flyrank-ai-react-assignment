@@ -4,9 +4,9 @@ import './globals.css'
 import { Navigation } from '../src/components/layout/Navigation'
 
 export const metadata: Metadata = {
-  title: 'TaskFlow',
+  title: 'TaskFlow AI',
   description:
-    'A frontend-only task management application built with Next.js and TypeScript.',
+    'An accessible AI-assisted work-management application built with Next.js and TypeScript.',
 }
 
 type RootLayoutProps = {

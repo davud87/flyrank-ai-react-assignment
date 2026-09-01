@@ -52,13 +52,7 @@
     min-height: 100svh;
     margin: 0;
     color: var(--text);
-    background:
-      radial-gradient(
-        circle at top left,
-        rgba(37, 99, 235, 0.11),
-        transparent 34%
-      ),
-      var(--bg);
+    background: var(--bg);
     font-synthesis: none;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
@@ -77,11 +71,6 @@
     transition:
       background-color 160ms ease,
       border-color 160ms ease,
-      color 160ms ease,
-      transform 160ms ease;
-  }
-
-  button:hover {
-    transform: translateY(-1px);
+      color 160ms ease;
   }
 }
