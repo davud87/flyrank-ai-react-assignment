@@ -1,191 +1,302 @@
-# TaskFlow
+# TaskFlow AI
 
-TaskFlow is a frontend-only task management application built with Next.js, React, TypeScript, Tailwind CSS, and browser localStorage. It helps users create, organize, search, filter, complete, edit, and delete tasks directly in the browser.
+TaskFlow AI is an accessible work-management application for individuals and small teams. It organizes work across departments and workflow stages, and includes an AI Task Planner that turns rough requirements into structured tasks users can review, edit, accept, or reject.
 
-This repository preserves the previous FlyRank frontend assignment work and migrates the application foundation from Vite to Next.js App Router for the FE-05 assignment.
+## Overview
+
+The app is a small Jira/Linear/Asana-inspired task workspace built with Next.js App Router, React, TypeScript, Tailwind CSS, and browser localStorage. It preserves the original TaskFlow assignment behavior while adding department spaces, Kanban workflow management, richer task details, tests, and production documentation.
+
+## Problem
+
+Basic todo lists are easy to start but become hard to scan once work spans multiple teams, priorities, owners, and workflow stages. TaskFlow AI gives that work a clearer structure without trying to become a full enterprise project-management platform.
+
+## Target Users
+
+TaskFlow AI is designed for students, freelancers, internship teams, and small teams that need lightweight planning across departments such as Marketing, Technical, Finance, Design, Sales, Operations, and HR.
+
+## Why This Project
+
+Project planning is a practical use case for AI because users often begin with vague requirements. The AI assistant reduces repetitive structuring work while keeping the user in control of the final task.
 
 ## Features
 
-- Create tasks
-- Edit tasks
-- Delete tasks with confirmation
-- Mark tasks completed/active
-- Low / Medium / High priority
-- Search tasks by title and description
-- Filter All / Active / Completed
-- localStorage persistence
-- Form validation
-- Responsive interface
-- Accessible controls
-- App Router root layout and navigation
-- `/health` page backed by a simple Next.js route handler
+- Department spaces in a left sidebar
+- Kanban workflow with Backlog, To Do, In Progress, Review, and Done
+- Manual task create, edit, delete, detail view, and status movement
+- Accessible native status selects as the primary task movement method
+- Search by title, description, labels, assignee, and department
+- Filters for status, priority, due date, and assignee
+- Overview statistics and department progress calculated from task state
+- Labels, subtasks, due dates, assignees, priorities, and AI-assisted flags
+- Backward-compatible localStorage migration for older TaskFlow tasks
+- Server-side AI Task Planner route
+- Structured AI output validation and safe failure states
+- Responsive layout with local Kanban scrolling on small screens
 
-## Technologies Used
+## AI Task Planner
 
-- Next.js
+The AI Task Planner accepts a rough project requirement and asks a server-side OpenRouter-compatible chat model to return one structured task. The suggestion includes title, description, department, priority, status, labels, subtasks, optional due date, and optional assignee.
+
+The suggestion is never saved automatically. Users must review it, can edit every field, and can reject it before creating a task.
+
+## Tech Stack
+
+- Next.js App Router
 - React
 - TypeScript
-- Tailwind CSS
-- CSS
-- ESLint
+- Tailwind CSS plus scoped CSS
+- lucide-react icons
+- Radix/shadcn dialog primitive
+- Vitest
+- Testing Library
 - Browser localStorage
+- OpenRouter chat completions through a server-side route
 
-## Running the Project Locally
+## Architecture
 
-Install dependencies:
+TaskFlow AI keeps the interactive task workspace as a Client Component because it uses React state, browser storage, and user interactions. Server routes stay inside `app/api`.
 
-```bash
-npm install
+Important files:
+
+- `app/page.tsx` renders the TaskFlow AI workspace.
+- `app/layout.tsx` defines metadata and shared navigation.
+- `app/api/health/route.ts` preserves the previous health endpoint.
+- `app/api/ai/task-planner/route.ts` keeps AI calls server-side.
+- `src/components/TaskFlowApp.tsx` owns app-level state and orchestration.
+- `src/components/taskflow/` contains focused workspace components.
+- `src/components/TaskForm.tsx` contains the reusable accessible task editor.
+- `src/types/task.ts` defines departments, statuses, priorities, task data, filters, and AI suggestions.
+- `src/utils/taskStorage.ts` loads, saves, and migrates localStorage task data.
+- `src/utils/taskAnalytics.ts` calculates filters, counts, overdue state, and department progress.
+- `src/utils/aiTaskPlanner.ts` stores the production prompt and validates structured AI output.
+
+## Project Structure
+
+```text
+app/
+  api/
+    ai/task-planner/route.ts
+    health/route.ts
+  health/page.tsx
+  layout.tsx
+  page.tsx
+src/
+  components/
+    taskflow/
+    TaskFlowApp.tsx
+    TaskForm.tsx
+  types/
+  utils/
+playground/
+  components/accessible pattern exercises
+docs/evidence/
+  testing and audit evidence instructions
 ```
 
-Start the development server:
+## Task Data Model
 
-```bash
-npm run dev
+A task contains:
+
+```ts
+id
+title
+description
+department
+status
+priority
+labels
+subtasks
+dueDate
+createdAt
+updatedAt
+assignee
+aiAssisted
+aiGenerated
+completed
 ```
 
-Run project checks:
+## Departments and Workflow
 
-```bash
-npm run lint
-npm run build
+Departments and statuses are separate concepts. A task can belong to Marketing while being In Progress, or belong to Technical while being in Review.
+
+Supported departments:
+
+```text
+Marketing, Technical, Finance, Design, Sales, Operations, HR
 ```
 
-Start a production build locally after building:
+Supported workflow statuses:
 
-```bash
-npm run start
+```text
+Backlog, To Do, In Progress, Review, Done
 ```
 
-## Route Structure
+## AI Architecture
 
-- `/` - Main TaskFlow application screen
-- `/health` - Health status page that fetches data from the local health API route
-- `/api/health` - JSON health endpoint used by the health page
+The browser calls only the local Next.js endpoint:
 
-The existing TaskFlow application represents the actual application screen from the completed frontend work. No unrelated placeholder screens were added.
+```text
+/api/ai/task-planner
+```
 
-## Architecture Notes
+The route reads `OPENROUTER_API_KEY` from the server environment, calls OpenRouter at `https://openrouter.ai/api/v1/chat/completions`, parses the selected model response, validates it, and returns only safe structured task data to the client.
 
-The App Router files are Server Components by default:
+## OpenRouter Integration
 
-- `app/layout.tsx`
-- `app/page.tsx`
-- `app/health/page.tsx`
-- `src/components/layout/Navigation.tsx`
+Required server-side environment variable:
 
-The interactive TaskFlow application is a Client Component:
+```bash
+OPENROUTER_API_KEY=
+```
 
-- `src/components/TaskFlowApp.tsx`
+Optional model variable:
 
-It uses `"use client"` because it depends on React state, effects, browser localStorage, form interactions, and `window.confirm`. Components imported by `TaskFlowApp` are part of that client-side task interface.
+```bash
+OPENROUTER_MODEL=openrouter/free
+```
+
+The API request uses Bearer authorization, sends `HTTP-Referer` from `NEXT_PUBLIC_APP_URL`, and keeps the secret out of browser JavaScript.
+
+## Prompt Strategy
+
+The production prompt lives in `src/utils/aiTaskPlanner.ts`. It instructs the model to act as a project-management assistant, use only supported TaskFlow departments/statuses/priorities, avoid inventing dates, keep subtasks actionable, and return only JSON in the requested shape.
+
+## Structured Output Validation
+
+TaskFlow AI does not trust raw LLM output. It validates:
+
+- required title and description
+- allowed departments
+- allowed priorities
+- allowed statuses
+- label and subtask arrays
+- due date format
+- malformed JSON
+- unexpected provider response shapes
+- empty provider responses
+
+## Safe Failure / Error Handling
+
+The AI feature handles empty input, overly long input, missing OpenRouter key, provider errors, rate limits, timeouts, malformed output, invalid structured output, duplicate submit attempts, and empty responses. Normal manual task management continues to work when AI is unavailable.
+
+## Accessibility
+
+The app uses semantic navigation, labeled inputs, native selects for status movement, visible focus states, accessible validation errors, progress elements, button labels, live announcements for task changes, and a Radix-backed modal dialog for focus containment and Escape handling. The previous accessibility playground work remains in `playground/`.
+
+## Testing
+
+Run:
+
+```bash
+npm test
+```
+
+Automated coverage includes task migration, filtering/stat calculations, AI structured validation, AI API safe failures, task creation, invalid form submission, editing, deleting, status movement, department filtering, search, duplicate AI request prevention, and accepting/editing AI suggestions before creation.
+
+## Coverage
+
+Run:
+
+```bash
+npm run test:coverage
+```
+
+Record the latest measured result in your submission evidence. The configured threshold is 50% for statements, branches, functions, and lines.
+
+Latest verified result:
+
+```text
+Statements: 72.44%
+Branches: 62.50%
+Functions: 71.25%
+Lines: 71.86%
+Component lines: 75.17%
+```
+
+## Performance
+
+The app avoids drag-and-drop libraries, heavy animation packages, large images, and client-side API keys. The Kanban board uses native controls and local state. Generated coverage output is ignored from Git.
 
 ## Environment Variables
 
-`.env.example` contains placeholder-only configuration:
+Create `.env.local` from `.env.example`:
 
 ```bash
+cp .env.example .env.local
+```
+
+Required for AI:
+
+```bash
+OPENROUTER_API_KEY=your_real_key_here
+```
+
+Optional:
+
+```bash
+OPENROUTER_MODEL=openrouter/free
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-Local secret files such as `.env`, `.env.local`, and `.env*.local` are ignored by Git. Do not commit real API keys, access tokens, passwords, or other credentials.
+Never commit real API keys.
 
-## AI-Assisted Development
-
-Codex was used as a development assistant during this project. It helped with inspecting the starter project, planning the architecture, generating the initial UI, implementing CRUD behavior, implementing search/filtering/localStorage, reviewing the code for potential improvements, and migrating the project foundation to Next.js App Router.
-
-Generated changes were reviewed and manually tested before being accepted. AI support was used as part of the development workflow, but final decisions were reviewed by me rather than accepted automatically.
-
-## Prompts Used During Development
-
-### Prompt 1 - Architecture and Planning
-
-Asked AI to inspect the Vite project without modifying code, propose a lightweight TaskFlow architecture, suggest components/types/state/localStorage strategy, identify accessibility and TypeScript concerns, and propose an implementation order.
-
-### Prompt 2 - Static UI Foundation
-
-Asked AI to remove the default Vite interface and build only the static TaskFlow UI with semantic HTML, accessible labels, responsive CSS, and TypeScript types. CRUD, localStorage, search, and filtering were explicitly excluded from this stage.
-
-### Prompt 3 - Core Task Functionality
-
-Asked AI to implement create, edit, delete, completed/active toggling, priority support, whitespace-normalized validation, accessible error handling, and React state while explicitly excluding search, filtering, and localStorage.
-
-### Prompt 4 - Search, Filtering, and Persistence
-
-Asked AI to add search by task title and optional description, implement All / Active / Completed filters, combine search and filtering, and add localStorage persistence using a simple implementation with safe fallback behavior.
-
-### Prompt 5 - Final Code Review
-
-Asked AI to review the completed project without modifying files and identify issues involving React structure, TypeScript, accessibility, validation, localStorage, duplication, naming, responsiveness, UX, and unused assets.
-
-### Prompt 6 - Refactoring
-
-Asked AI to centralize duplicated task types and priority metadata, remove genuinely unused starter assets, and add confirmation before deleting tasks.
-
-### Prompt 7 - Next.js App Router Migration
-
-Asked AI to preserve the existing TaskFlow functionality while migrating the Vite application to Next.js with App Router, Server Components by default, a Client Component for the interactive task app, Tailwind CSS design tokens, a root layout, navigation, `/health`, safe environment-variable structure, and deployment readiness for the existing Vercel project.
-
-## Review and Improvements
-
-During UI review, I noticed the empty-state message said that functionality would be implemented "in the next stage." I manually changed this developer-facing placeholder to user-facing copy: "Add your first task to start organizing your day."
-
-After reviewing the application, duplicated task-related types and priority metadata were identified during the AI-assisted code review and subsequently centralized through review-driven AI-assisted refactoring. Delete confirmation was also added to reduce accidental deletion, and unused starter assets were reviewed and removed where genuinely unused.
-
-For FE-05, the previous Vite entry files were replaced with a Next.js App Router structure. The existing TaskFlow logic was preserved and moved into a Client Component because it uses browser-only interactivity.
-
-## Manual Testing
-
-I manually verified during development:
-
-- Adding tasks
-- Whitespace-only title validation
-- Descriptions
-- Low / Medium / High priorities
-- Editing
-- Cancel editing
-- Deleting
-- Cancelling deletion
-- Completed/active toggling
-- All / Active / Completed filters
-- Case-insensitive title search
-- Description search
-- Persistence after refresh
-- Edited/deleted state persistence
-- localStorage contents in browser DevTools
-
-For the Next.js migration, also verify:
-
-- `/` renders the TaskFlow application
-- `/health` renders fetched health data
-- Navigation reaches the available routes
-- Responsive layout works around 375px and 1280px widths
-- The existing Vercel project builds after pushing to GitHub
-
-## Verification
-
-The project should be verified using:
+## Local Development
 
 ```bash
+git clone https://github.com/davud87/flyrank-ai-react-assignment.git
+cd flyrank-ai-react-assignment
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Production Build
+
+```bash
+npm install
 npm run lint
+npm test
+npm run test:coverage
 npm run build
 ```
 
-No automated tests are currently included in this project.
-
 ## Deployment
 
-This repository is already connected to an existing Vercel deployment. No new Vercel project is required.
+The repository is connected to Vercel. Configure `OPENROUTER_API_KEY` in the Vercel project environment before testing AI in production. Optionally configure `OPENROUTER_MODEL` and `NEXT_PUBLIC_APP_URL`. Keep the framework preset as Next.js and the build command as `next build`.
 
-After pushing the migration, verify in the existing Vercel dashboard that:
+## Monitoring
 
-- Framework preset is detected as Next.js
-- Build command is `next build`
-- Install command is `npm install`
-- Output directory is unset/default for Next.js
-- Preview deployments build successfully from Git pushes
+Use lightweight monitoring appropriate for the capstone:
 
-## Repository / Live Demo
+- Vercel deployment status and build logs
+- Vercel function logs for `/api/ai/task-planner`
+- Browser console checks during manual QA
+- Optional Vercel Analytics if already enabled
 
-- Repository: https://github.com/davud87/flyrank-ai-react-assignment
-- Live demo: https://flyrank-ai-react-assignment.vercel.app
+If AI fails in production, check whether `OPENROUTER_API_KEY` is configured, whether OpenRouter returned a non-200 response, whether the route rejected malformed output, and whether the client still allows manual task creation.
+
+## Rollback Plan
+
+For Vercel, identify the previous stable deployment and promote or redeploy it. For a source rollback, revert the offending commit, push the revert to `main`, wait for the new deployment, then verify `/`, `/health`, `/api/health`, and manual task creation.
+
+## Known Limitations
+
+- Single-user browser localStorage persistence
+- No authentication
+- No real-time collaboration
+- AI requires a configured OpenRouter API key
+- No advanced permissions
+- No sprint, epic, or full Jira-style hierarchy
+- No production database
+- npm audit currently requires a semver-major Next.js upgrade to fully resolve reported findings
+- `next build` can show a non-blocking ESLint plugin detection warning even though standalone lint passes
+
+## Future Improvements
+
+- Persist tasks in a backend database
+- Add authentication and team workspaces
+- Add optional drag-and-drop only after accessible controls remain covered
+- Add richer audit evidence with Lighthouse and WAVE/axe screenshots
+- Revisit Next.js major-version upgrade after capstone submission
