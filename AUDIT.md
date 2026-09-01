@@ -54,6 +54,8 @@ Audit date:
 
 During implementation, status movement was implemented with native `<select>` controls before considering drag-and-drop. This keeps the core Kanban workflow accessible to keyboard, touch, and assistive-technology users and avoids making drag gestures the only way to move work.
 
+The production accessibility audit identified three serious WCAG 2.1 AA contrast issues using the shared muted text color `#697386`. The shared muted tokens were darkened to `#596273`, which calculates to 5.73:1 on `#f5f7fb` and 5.49:1 on `#eef2ff`. Rerun Lighthouse and axe/WAVE after deployment to record final audited results.
+
 ## Manual Evidence Needed
 
 Add evidence after manual audit:
